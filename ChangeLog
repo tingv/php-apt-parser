@@ -1,0 +1,19 @@
+2006-06-24  Damián Viano  <debian@damianv.com.ar>
+	* README: added info from parse-apt-files.inc
+	* ChangeLog: added entries from parse-apt-files.inc
+	* LICENSE: added MIT license, and Jarno Elonen copyright notice
+	* parse-apt-files.inc: removed all that (now) redundant info
+
+2004-10-17  Jarno Elonen  <elonen@debian.org>
+	Version 1.2
+	* parse-apt-files.inc: 
+	  - search for .changes file and print a link if possible
+	  - support for non-compressed Packages and Sources files
+
+2004-08-09  Jarno Elonen  <elonen@debian.org>
+	Version 1.1
+	* parse-apt-files.inc: 
+	  - added support for multiple architectures (thanks to  Djoumé Salvetti)
+	  - added support for multiple versions of the same package
+	  - changed link_aware_htmlize() to accept all sorts of URLs, not just HTTP
+	  - simplified the code here and there

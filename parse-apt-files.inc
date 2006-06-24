@@ -6,33 +6,6 @@
     // (Packages.gz, Sources.gz) and generate an XHTML summary of them.
     //
     // Written by Jarno Elonen in 2003, 2004
-    // Released into Public Domain without any warranties.
-    //
-    // Usage:
-    //
-    //   include_once("parse-apt-files.inc");
-    //   parse_and_list( "Packages.gz", "Sources.gz" );
-    //
-    // ... or if the repository consist of multiple Packages files:
-    //
-    //   include_once("parse-apt-files.inc");
-    //   parse_and_list( Array("i386/Packages.gz", "powerpc/Packages.gz"), "Sources.gz" );
-    //
-    //
-    // Changelog
-    //
-    //    2004-08-09, Jarno Elonen <elonen@debian.org>:
-    //        + version 1.1
-    //        + added support for multiple architectures (thanks to  Djoumé Salvetti)
-    //        + added support for multiple versions of the same package
-    //        + changed link_aware_htmlize() to accept all sorts of URLs, not just HTTP
-    //        + simplified the code here and there
-    //
-    //    2004-10-17, Jarno Elonen <elonen@debian.org>:
-    //        + version 1.2
-    //        + search for .changes file and print a link if possible
-    //        + support for non-compressed Packages and Sources files
-    //
     //////////////////////////////////////////////////////////////////
 
     // Parse Packages.gz or Sources.gz file and return an array of format
