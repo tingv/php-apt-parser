@@ -1,0 +1,11 @@
+This script contains functions to parse Debian APT-repository files
+(Packages.gz, Sources.gz) and generate an XHTML summary of them.
+
+Usage:
+ include_once("parse-apt-files.inc");
+ parse_and_list( "Packages.gz", "Sources.gz" );
+
+... or if the repository consist of multiple Packages files:
+
+ include_once("parse-apt-files.inc");
+ parse_and_list( Array("i386/Packages.gz", "powerpc/Packages.gz"), "Sources.gz" );
