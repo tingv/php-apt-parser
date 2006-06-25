@@ -6,32 +6,32 @@
 	  Viano copyright notice
 	* parse-apt-files.inc: 
 	  - bring file up to date, 
-		- removed all that (now) redundant info
+	  - removed all that (now) redundant info
 	* examples/: 
 	  - added example packages.cgi
 	  - added example packages.css
 
-2006-04-27, Damián Viano <debian@damianv.com.ar.>, 1.2.9:
+2006-04-27, Damián Viano <debian@damianv.com.ar>, 1.2.9:
 	* parse-apt-files.inc: 
-		- added span, and class declarations for css, also removed hardcoded
-		  formating
+	  - added span, and class declarations for css, also removed hardcoded
+	    formating
 	  - improved html formating
 
 2006-04-26, Damián Viano <debian@damianv.com.ar.>, 1.2.8:
 	* parse-apt-files.inc: 
-		- added support for a $base_url global to make links absolutes, useful
-		  when runned as cgi
-		- smart striping absolute paths from changes and buildlog files based on
-		  $base_url
-		- fix typo in parsing that messed descriptions with two spaces in the
-		  beggining of a description line
+	  - added support for a $base_url global to make links absolutes, useful
+	    when runned as cgi
+	  - smart striping absolute paths from changes and buildlog files based on
+	    $base_url
+	  - fix typo in parsing that messed descriptions with two spaces in the
+	    beggining of a description line
 
 2006-01-04, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.7:
 	* parse-apt-files.inc: 
-		- when searching for .changes and .build files, the search failed, if
-			version number contained x:up_ver-deb_ver (e.g.  3:3.0.5-1). We now
-			remove a leading 'x:' from the version number and finally find our
-			files.
+	  - when searching for .changes and .build files, the search failed, if
+	  	version number contained x:up_ver-deb_ver (e.g.  3:3.0.5-1). We now
+	  	remove a leading 'x:' from the version number and finally find our
+	  	files.
 
 2005-09-21, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.6:
 	* parse-apt-files.inc: 
@@ -48,8 +48,8 @@
 
 2005-06-18, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.3:
 	* parse-apt-files.inc: 
-		- links to .build files can be included in overview (found similiar to
-		  .changes files)
+	  - links to .build files can be included in overview (found similiar to
+	    .changes files)
 
 2005-06-08, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.2:
 	* parse-apt-files.inc: 

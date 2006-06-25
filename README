@@ -8,7 +8,10 @@ Usage:
 ... or if the repository consist of multiple Packages files:
 
  include_once("parse-apt-files.inc");
- parse_and_list( Array("i386/Packages.gz", "powerpc/Packages.gz"), "Sources.gz" );
+ parse_and_list( 
+     Array("i386/Packages.gz", 
+           "powerpc/Packages.gz"), 
+     "Sources.gz" );
 
 ... or especially for debarchiver:
 
