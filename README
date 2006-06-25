@@ -9,3 +9,16 @@ Usage:
 
  include_once("parse-apt-files.inc");
  parse_and_list( Array("i386/Packages.gz", "powerpc/Packages.gz"), "Sources.gz" );
+
+... or especially for debarchiver:
+
+ include_once("parse-apt-files.inc");
+ parse_and_list(
+     Array("dists/sid/main/binary-i386/Packages.gz",
+           "dists/sid/contrib/binary-i386/Packages.gz",
+           "dists/sid/non-free/binary-i386/Packages.gz"),
+     Array("dists/sid/main/source/Sources.gz",
+           "dists/sid/contrib/source/Sources.gz",
+           "dists/sid/non-free/source/Sources.gz"),
+     "dists/sid/installed",
+     "build_logs");
