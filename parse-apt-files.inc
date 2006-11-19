@@ -211,6 +211,9 @@ $shared_changesdir = False, $shared_buildlogsdir = False )
                 $chfile = False;
                 while (false !== ($file = readdir($dhandle)))
                 {
+                    // Packages with multiple binaries or a source-package
+                    // name != binary-package name normally have a Source-field
+                    // in Packages(.{gz,bz2}).
                     if ( isset($fields["Source"] ))
                     {
                         if (strpos($file, $fields["Source"] . '_' .
@@ -218,13 +221,18 @@ preg_replace('/^[0-9]+\:/', '', $fields["Version"])) !== False &&
                             strpos($file, '.changes') !== False )
                             $chfile = $file;
                     }
-                    else if ( isset( $srcfields["Directory"] ))
+                    // If there is no Source-field, just try to use the
+                    // Packages-field in Sources(.{gz,bz2}).
+                    else if ( isset( $srcfields["Package"] ))
                     {
-                        if (strpos($file, $srcfields["Source"] . '_' .
+                        if (strpos($file, $srcfields["Package"] . '_' .
 preg_replace('/^[0-9]+\:/', '', $fields["Version"])) !== False &&
                             strpos($file, '.changes') !== False )
                             $chfile = $file;
                     }
+                    // And at least simply try the Package-field from
+                    // Packages(.{gz,bz2}) for those packages, that do not have
+                    // a Sources(.{gz,bz2}) entry.
                     else
                     {
                         if (strpos($file, $fields["Package"] . '_' .
@@ -259,6 +267,9 @@ preg_replace('/^[0-9]+\:/', '', $fields["Version"])) !== False &&
                 $blfile = False;
                 while (false !== ($file = readdir($dhandle)))
                 {
+                    // Packages with multiple binaries or a source-package
+                    // name != binary-package name normally have a Source-field
+                    // in Packages(.{gz,bz2}).
                     if ( isset($fields["Source"] ))
                     {
                         if (strpos($file, $fields["Source"] . '_' .
@@ -266,13 +277,18 @@ preg_replace('/^[0-9]+\:/', '', $fields["Version"])) !== False &&
                             strpos($file, '.build') !== False )
                             $blfile = $file;
                     }
-                    else if ( isset( $srcfields["Directory"] ))
+                    // If there is no Source-field, just try to use the
+                    // Packages-field in Sources(.{gz,bz2}).
+                    else if ( isset( $srcfields["Package"] ))
                     {
-                        if (strpos($file, $srcfields["Source"] . '_' .
+                        if (strpos($file, $srcfields["Package"] . '_' .
 preg_replace('/^[0-9]+\:/', '', $fields["Version"])) !== False &&
                             strpos($file, '.build') !== False )
                             $blfile = $file;
                     }
+                    // And at least simply try the Package-field from
+                    // Packages(.{gz,bz2}) for those packages, that do not have
+                    // a Sources(.{gz,bz2}) entry.
                     else
                     {
                         if (strpos($file, $fields["Package"] . '_' .
