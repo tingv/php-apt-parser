@@ -1,13 +1,19 @@
 <?php
     //////////////////////////////////////////////////////////////////
-    // PHP Apt-file parser, Version 1.3
+    // PHP Apt-file parser, Version 1.3.2
+    // $Id$
     //
     // The following PHP functions parse Debian APT-repository files
     // (Packages.gz, Sources.gz) and generate an XHTML summary of them.
     //
     // Written by Jarno Elonen in 2003, 2004
-    // Written by Daniel Leidert in 2005, 2006
+    // Written by Daniel Leidert in 2005-2007
     // Written by Damian Viano in 2006
+    //
+    // Visit or join us at
+    //   http://alioth.debian.org/projects/php-apt-parser.
+    //
+    // For licensing information see the LICENSE file.
     //
     //////////////////////////////////////////////////////////////////
 
@@ -175,7 +181,17 @@
 
 
             
-            // Figure out the most likely location for "changes" file.
+            // If sources are available, print out location.
+            if ( isset($srcfields["Directory"]) )
+            {
+                print "| <a href=\"" .
+                    htmlentities($base_url) .
+                    htmlentities($srcfields["Directory"]) .
+                    "\">Source dir</a>" . "\n";
+
+            }
+  
+            // Figure out the most likely location for ".changes" files.
             $changesdir = False;
             if ( $shared_changesdir !== False )
                 $changesdir = $shared_changesdir;
@@ -187,27 +203,6 @@
                 $changesdir = $changesdir["dirname"];
             }
 
-            $buildlogsdir = False;
-            if ( $shared_buildlogsdir !== False )
-                $buildlogsdir = $shared_buildlogsdir;
-            else if ( isset($srcfields["Directory"]) )
-                $buildlogsdir = $srcfields["Directory"];
-            else
-            {
-                $buildlogsdir = pathinfo($some_bin);
-                $buildlogsdir = $buildlogsdir["dirname"];
-            }
-
-            // If sources are available, print out location.
-            if ( isset($srcfields["Directory"]) )
-            {
-                print "| <a href=\"" .
-                    htmlentities($base_url) .
-                    htmlentities($srcfields["Directory"]) .
-                    "\">Source dir</a>" . "\n";
-
-            }
-  
             // Try to make a changes file link. This adds quite a bit
             // of disk access so if your server is very busy, you might
             // want to comment this out.
@@ -267,6 +262,18 @@
                 closedir($dhandle);
             }
 
+            // Figure out the most likely location for ".build" files.
+            $buildlogsdir = False;
+            if ( $shared_buildlogsdir !== False )
+                $buildlogsdir = $shared_buildlogsdir;
+            else if ( isset($srcfields["Directory"]) )
+                $buildlogsdir = $srcfields["Directory"];
+            else
+            {
+                $buildlogsdir = pathinfo($some_bin);
+                $buildlogsdir = $buildlogsdir["dirname"];
+            }
+
             // Try to make a build-log file link. This adds quite a bit
             // of disk access so if your server is very busy, you might
             // want to comment this out.
@@ -283,7 +290,8 @@
                         if ( strpos($file, $fields["Source"] . "_" .
                              preg_replace("/^[0-9]+\:/", "",
                              $fields["Version"])) !== False &&
-                             strpos($file, ".changes") !== False )
+                             strpos($file, ".build") !== False )
+                            $blfile = $file;
                     }
                     // If there is no Source-field, just try to use the
                     // Packages-field in Sources(.{gz,bz2}).
@@ -292,7 +300,8 @@
                         if ( strpos($file, $srcfields["Package"] . "_" .
                              preg_replace("/^[0-9]+\:/", "",
                              $fields["Version"])) !== False &&
-                             strpos($file, ".changes") !== False )
+                             strpos($file, ".build") !== False )
+                            $blfile = $file;
                     }
                     // And at least simply try the Package-field from
                     // Packages(.{gz,bz2}) for those packages, that do not have
@@ -302,7 +311,7 @@
                         if ( strpos($file, $fields["Package"] . "_" .
                              preg_replace("/^[0-9]+\:/", "",
                              $fields["Version"])) !== False &&
-                             strpos($file, ".changes") !== False )
+                             strpos($file, ".build") !== False )
                             $blfile = $file;
                     }
                     if ( $blfile !== False )

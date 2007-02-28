@@ -1,3 +1,17 @@
+2007-02-28  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.2:
+	* ChangeLog: Added missing entries for last change.
+	* parse-apt-files.inc:
+	  - Fixed bugs in the .build files search/link creation code
+	    introduced in revision 21 (1.3.1).
+	  - Reorganized the steps we do without further code-changes.
+	  - Added some information to the header comment.
+
+2006-11-19  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.1:
+	* parse-apt-files.inc:
+	  - Fixed Alioth bug #304143. I tried to read a non-existing field in
+	    Sources and it seems, this confused the script a bit.
+	    (http://alioth.debian.org/tracker/?func=detail&aid=304143&group_id=30953&atid=412507)
+
 2006-06-24  Damián Viano  <debian@damianv.com.ar>, 1.3.0:
 	* README: added info from parse-apt-files.inc, and mention to debarchiver
 	  specific usage
