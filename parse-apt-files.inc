@@ -1,6 +1,6 @@
 <?php
     //////////////////////////////////////////////////////////////////
-    // PHP Apt-file parser, Version 1.3.2
+    // PHP Apt-file parser, Version 1.3.3
     // $Id$
     //
     // The following PHP functions parse Debian APT-repository files
@@ -92,19 +92,94 @@
         return str_replace("\n", "<br/>\n", $res);
     }
 
-        function parse_section( $section )
-        {
-                $res = "<span class=\"section\">";
-                if ( preg_match("!(contrib/[a-z]+)!is", $section) )
-                    $res .= ", <span class=\"contrib\">contrib</span>";
-                else if ( preg_match("!(non-free/[a-z]+)!is", $section) )
-                    $res .= ", <span class=\"nonfree\">non-free</span>";
-                else
-                    $res .= ", <span class=\"main\">main</span>";
-                return $res . "</span>";
-        }
+    function parse_section( $section )
+    {
+        $res = "<span class=\"section\">";
+        if ( preg_match("!(contrib/[a-z]+)!is", $section) )
+            $res .= ", <span class=\"contrib\">contrib</span>";
+        else if ( preg_match("!(non-free/[a-z]+)!is", $section) )
+            $res .= ", <span class=\"nonfree\">non-free</span>";
+        else
+            $res .= ", <span class=\"main\">main</span>";
+        return $res . "</span>";
+    }
 
-    // Parse given files and write out a nice summary in HTML
+    // We simply check, if the created filename fits exactly the beginning of
+    // the name of the given file. If yes, we have our  
+    // This adds quite a bit of disk access so if your server is very busy,
+    // you might want to comment the function call out.
+    function chb_file_match( $file, $field )
+    {
+        $res = false;
+        if ( strpos( $file, $field . "_" . $version, 0 ) !== False )
+          return $file;
+        else
+          return $res;
+    }
+
+    // Get a directory and which files to search for. Try to make a file link.
+    // This adds quite a bit of disk access so if your server is very busy,
+    // you might want to comment the function call out.
+    function chb_file_link_from_directory( $dir, $ext, $myfields, $mysrcdields )
+    {
+        // Declare $version as global. So we don't need to overhand it to
+        // chb_file_match() everytime we call it.
+        global $version;
+
+        $dhandle = false;
+        $version = preg_replace("/^[0-9]+\:/", "", $myfields["Version"]);
+
+        // If no special directory was given, we set the directory found in
+        // the "Directory" field of the Sources(.gz) entry as search path.
+        if ( $dir == False )
+            $dir = $mysrcdields["Directory"];
+
+        if ( $dir !== False && $dhandle = opendir($dir) )
+        {
+            $chfile = False;
+            
+            while ( false !== ($file = readdir($dhandle)) )
+            {
+                $fileinfo = pathinfo($file);
+                // Only check files, that are not '.' or '..' and have the
+                // necessary file extension. This maybe reduces the workload.
+                if ( $file != "."
+                     && $file != ".."
+                     && $fileinfo["extension"] == $ext )
+                { 
+                    // Packages with multiple binaries or a source-package
+                    // name != binary-package name normally have a
+                    // "Source"-field in Packages(.{gz,bz2}).
+                    if ( isset($myfields["Source"]) )
+                        $chfile = chb_file_match($file, $myfields["Source"]);
+                    // If there is no "Source"-field, just try to use the
+                    // Packages-field in Sources(.{gz,bz2}).
+                    else if ( isset($mysrcdields["Package"]) )
+                        $chfile = chb_file_match($file, $mysrcdields["Package"]);
+                    // And at least simply try the "Package"-field from
+                    // Packages(.{gz,bz2}) for those packages, that do not
+                    // have a Sources(.{gz,bz2}) entry.
+                    else
+                        $chfile = chb_file_match($file, $myfields["Package"]);
+                }
+                if ( $chfile !== False )
+                {
+                        print "| <a href=\"" .
+                        htmlentities($base_url) .
+                        htmlentities($dir) .
+                        "/" .
+                        htmlentities($chfile) .
+                        "\">" . "." . $ext .
+                        "</a>" . "\n";
+                    break;
+                }
+            }
+            closedir($dhandle);
+        }
+    }
+
+    // Parse given files and write out a nice summary in HTML.
+    // This is the main function.
     function parse_and_list( $packagesgzfiles, $sourcesgzfile,
                              $shared_changesdir = False,
                              $shared_buildlogsdir = False )
@@ -179,8 +254,6 @@
             print "Binary for arch <span class=\"archs\">" .
                   join(", ", $archlinks) . "</span>\n";
 
-
-            
             // If sources are available, print out location.
             if ( isset($srcfields["Directory"]) )
             {
@@ -191,148 +264,13 @@
 
             }
   
-            // Figure out the most likely location for ".changes" files.
-            $changesdir = False;
-            if ( $shared_changesdir !== False )
-                $changesdir = $shared_changesdir;
-            else if ( isset($srcfields["Directory"]) )
-                $changesdir = $srcfields["Directory"];
-            else
-            {
-                $changesdir = pathinfo($some_bin);
-                $changesdir = $changesdir["dirname"];
-            }
-
-            // Try to make a changes file link. This adds quite a bit
-            // of disk access so if your server is very busy, you might
-            // want to comment this out.
-            if ( $changesdir !== False && $dhandle = opendir($changesdir) )
-            {
-                $chfile = False;
-                while ( false !== ($file = readdir($dhandle)) )
-                {
-                    // Packages with multiple binaries or a source-package
-                    // name != binary-package name normally have a Source-field
-                    // in Packages(.{gz,bz2}).
-                    if ( isset($fields["Source"]) )
-                    {
-                        if ( strpos($file, $fields["Source"] . "_" .
-                             preg_replace("/^[0-9]+\:/", "",
-                             $fields["Version"])) !== False &&
-                             strpos($file, ".changes") !== False )
-                            $chfile = $file;
-                    }
-                    // If there is no Source-field, just try to use the
-                    // Packages-field in Sources(.{gz,bz2}).
-                    else if ( isset($srcfields["Package"]) )
-                    {
-                        if ( strpos($file, $srcfields["Package"] . "_" .
-                             preg_replace("/^[0-9]+\:/", "",
-                             $fields["Version"])) !== False &&
-                             strpos($file, ".changes") !== False )
-                            $chfile = $file;
-                    }
-                    // And at least simply try the Package-field from
-                    // Packages(.{gz,bz2}) for those packages, that do not have
-                    // a Sources(.{gz,bz2}) entry.
-                    else
-                    {
-                        if ( strpos($file, $fields["Package"] . "_" .
-                             preg_replace("/^[0-9]+\:/", "",
-                             $fields["Version"])) !== False &&
-                             strpos($file, ".changes") !== False )
-                            $chfile = $file;
-                    }
-                    if ( $chfile !== False )
-                    {
-                        print "| <a href=\"" .
-                            htmlentities($base_url) .
-                            htmlentities(preg_replace("!.*" . 
-                                                        preg_replace(
-                                                           "!.*(/[^/]+/?)$!",
-                                                           "$1", 
-                                                           $base_url) . 
-                                                        "(.*)!", "$1",
-                                                        $changesdir) . 
-                                          "/" . $chfile) .
-                            "\">Changes</a>" . "\n";
-                        break;
-                    }
-                }
-                closedir($dhandle);
-            }
-
-            // Figure out the most likely location for ".build" files.
-            $buildlogsdir = False;
-            if ( $shared_buildlogsdir !== False )
-                $buildlogsdir = $shared_buildlogsdir;
-            else if ( isset($srcfields["Directory"]) )
-                $buildlogsdir = $srcfields["Directory"];
-            else
-            {
-                $buildlogsdir = pathinfo($some_bin);
-                $buildlogsdir = $buildlogsdir["dirname"];
-            }
-
-            // Try to make a build-log file link. This adds quite a bit
-            // of disk access so if your server is very busy, you might
-            // want to comment this out.
-            if ( $buildlogsdir !== False && $dhandle = opendir($buildlogsdir) )
-            {
-                $blfile = False;
-                while ( false !== ($file = readdir($dhandle)) )
-                {
-                    // Packages with multiple binaries or a source-package
-                    // name != binary-package name normally have a Source-field
-                    // in Packages(.{gz,bz2}).
-                    if ( isset($fields["Source"]) )
-                    {
-                        if ( strpos($file, $fields["Source"] . "_" .
-                             preg_replace("/^[0-9]+\:/", "",
-                             $fields["Version"])) !== False &&
-                             strpos($file, ".build") !== False )
-                            $blfile = $file;
-                    }
-                    // If there is no Source-field, just try to use the
-                    // Packages-field in Sources(.{gz,bz2}).
-                    else if ( isset($srcfields["Package"]) )
-                    {
-                        if ( strpos($file, $srcfields["Package"] . "_" .
-                             preg_replace("/^[0-9]+\:/", "",
-                             $fields["Version"])) !== False &&
-                             strpos($file, ".build") !== False )
-                            $blfile = $file;
-                    }
-                    // And at least simply try the Package-field from
-                    // Packages(.{gz,bz2}) for those packages, that do not have
-                    // a Sources(.{gz,bz2}) entry.
-                    else
-                    {
-                        if ( strpos($file, $fields["Package"] . "_" .
-                             preg_replace("/^[0-9]+\:/", "",
-                             $fields["Version"])) !== False &&
-                             strpos($file, ".build") !== False )
-                            $blfile = $file;
-                    }
-                    if ( $blfile !== False )
-                    {
-                        print "| <a href=\"" .
-                            htmlentities($base_url) .
-                            htmlentities(preg_replace("!.*" . 
-                                                        preg_replace(
-                                                           "!.*(/[^/]+/?)$!",
-                                                           "$1", 
-                                                           $base_url) . 
-                                                        "(.*)!", "$1",
-                                                        $buildlogsdir) . 
-                                          "/" . $blfile) .
-                            "\">Build-Log</a>" . "\n";
-                        break;
-                    }
-                }
-                closedir($dhandle);
-            }
+            // Now create .changes and .build file links.
+            chb_file_link_from_directory( $shared_changesdir, "changes", $fields, $srcfields );
+            // The file extenion for build-log should be changeable. For the
+            // moment we set it to the debuild/pdebuild default '.build'.
+            chb_file_link_from_directory( $shared_buildlogsdir, "build", $fields, $srcfields );
             
+            // Output the package description.
             print "<br/><br/>\n" .
                   "<blockquote><p class=\"description\">\n" .
                   link_aware_htmlize(

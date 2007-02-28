@@ -1,3 +1,20 @@
+2007-02-28  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.3:
+	* parse-apt-files.inc:
+	  - Moved the .changes and .build detection into two functions:
+	    chb_file_link_from_directory() opens the given directory and reads
+	    all files with the given extension. To check, if the file belongs
+	    to a package, it calls chb_file_match(). This function creates a
+	    string from the given values and tests, if the filename begings
+	    with this string. This change was made, because the code to check
+	    for .changes and .build files was very simlar.
+	    This code change also reverts a change made to link-target
+	    creation, made by Damián Viano (read Alioth bug #304089 for more
+	    information). Because I also did not find out, for what $some_bin
+	    was used, this part was also removed and the code to determine the
+	    search path simplified.
+	  - I further "fixed" the indentation for function parse_section.
+	  - Added some more documentation.
+
 2007-02-28  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.2:
 	* ChangeLog: Added missing entries for last change.
 	* parse-apt-files.inc:
