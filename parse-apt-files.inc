@@ -1,6 +1,6 @@
 <?php
     //////////////////////////////////////////////////////////////////
-    // PHP Apt-file parser, Version 1.3.3
+    // PHP Apt-file parser, Version 1.3.4
     // $Id$
     //
     // The following PHP functions parse Debian APT-repository files
@@ -164,13 +164,16 @@
                 }
                 if ( $chfile !== False )
                 {
-                        print "| <a href=\"" .
+                        print "| <span class=\"" .
+                        $ext .
+                        "\"><a href=\"" .
                         htmlentities($base_url) .
                         htmlentities($dir) .
                         "/" .
                         htmlentities($chfile) .
-                        "\">" . "." . $ext .
-                        "</a>" . "\n";
+                        "\">" . "." .
+                        htmlentities($ext) .
+                        "</a></span>" . "\n";
                     break;
                 }
             }
@@ -232,10 +235,12 @@
                 $srcfields = $sources[$pkg];
 
             print "<span class=\"name\">" .
-                  htmlentities($fields["Package"]) . "</span> " .
+                  htmlentities($fields["Package"]) .
+                  "</span> " .
                   "<span class=\"version\">(" .
                   htmlentities($fields["Version"]) .
-                  parse_section($fields["Section"]) . ")</span>" .
+                  parse_section($fields["Section"]) .
+                  ")</span>" .
                   "\n";
 
             if ( strlen(trim($fields["Description"])) )
@@ -247,20 +252,23 @@
             $archlinks = Array();
             while( list($arch_name, list(, $arch_fields)) = each($archs) )
                 $archlinks[] = "<a href=\"" .
-                    htmlentities($base_url) .
-                    htmlentities($arch_fields["Filename"]) . "\">" .
-                    htmlentities($arch_name) . " (" .
-                    human_format_size($arch_fields["Size"]) . ")</a>";
-            print "Binary for arch <span class=\"archs\">" .
+                               htmlentities($base_url) .
+                               htmlentities($arch_fields["Filename"]) .
+                               "\">" .
+                               htmlentities($arch_name) .
+                               " (" .
+                               human_format_size($arch_fields["Size"]) .
+                               ")</a>";
+            print "<span class=\"linkline\">Binary for arch <span class=\"archs\">" .
                   join(", ", $archlinks) . "</span>\n";
 
             // If sources are available, print out location.
             if ( isset($srcfields["Directory"]) )
             {
-                print "| <a href=\"" .
+                print "| <span class=\"source\"><a href=\"" .
                     htmlentities($base_url) .
                     htmlentities($srcfields["Directory"]) .
-                    "\">Source dir</a>" . "\n";
+                    "\">Source dir</a></span>" . "\n";
 
             }
   
@@ -269,6 +277,8 @@
             // The file extenion for build-log should be changeable. For the
             // moment we set it to the debuild/pdebuild default '.build'.
             chb_file_link_from_directory( $shared_buildlogsdir, "build", $fields, $srcfields );
+            
+            print "</span>";
             
             // Output the package description.
             print "<br/><br/>\n" .
