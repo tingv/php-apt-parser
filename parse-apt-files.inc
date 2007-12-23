@@ -1,6 +1,6 @@
 <?php
     //////////////////////////////////////////////////////////////////
-    // PHP Apt-file parser, Version 1.3.4
+    // PHP Apt-file parser, Version 1.3.5
     // $Id$
     //
     // The following PHP functions parse Debian APT-repository files
@@ -108,7 +108,7 @@
     // the name of the given file. If yes, we have our  
     // This adds quite a bit of disk access so if your server is very busy,
     // you might want to comment the function call out.
-    function chb_file_match( $file, $field )
+    function chb_file_match( $file, $version, $field )
     {
         $res = false;
         if ( strpos( $file, $field . "_" . $version, 0 ) !== False )
@@ -122,10 +122,6 @@
     // you might want to comment the function call out.
     function chb_file_link_from_directory( $dir, $ext, $myfields, $mysrcdields )
     {
-        // Declare $version as global. So we don't need to overhand it to
-        // chb_file_match() everytime we call it.
-        global $version;
-
         $dhandle = false;
         $version = preg_replace("/^[0-9]+\:/", "", $myfields["Version"]);
 
@@ -151,16 +147,16 @@
                     // name != binary-package name normally have a
                     // "Source"-field in Packages(.{gz,bz2}).
                     if ( isset($myfields["Source"]) )
-                        $chfile = chb_file_match($file, $myfields["Source"]);
+                        $chfile = chb_file_match($file, $version, $myfields["Source"]);
                     // If there is no "Source"-field, just try to use the
                     // Packages-field in Sources(.{gz,bz2}).
                     else if ( isset($mysrcdields["Package"]) )
-                        $chfile = chb_file_match($file, $mysrcdields["Package"]);
+                        $chfile = chb_file_match($file, $version, $mysrcdields["Package"]);
                     // And at least simply try the "Package"-field from
                     // Packages(.{gz,bz2}) for those packages, that do not
                     // have a Sources(.{gz,bz2}) entry.
                     else
-                        $chfile = chb_file_match($file, $myfields["Package"]);
+                        $chfile = chb_file_match($file, $version, $myfields["Package"]);
                 }
                 if ( $chfile !== False )
                 {

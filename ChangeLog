@@ -1,3 +1,8 @@
+2007-03-01  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.5:
+	* parse-apt-files.inc:
+	  - Make $version a local variable. Seems the global thing doesn't
+	    work here and leads to wrongly assumed .build and .changes files.
+
 2007-03-01  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.4:
 	* parse-apt-files.inc:
 	  - Added some more classes to allow more customization.
