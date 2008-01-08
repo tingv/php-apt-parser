@@ -1,6 +1,6 @@
 <?php
     //////////////////////////////////////////////////////////////////
-    // PHP Apt-file parser, Version 1.3.5
+    // PHP Apt-file parser, Version 1.3.6
     // $Id$
     //
     // The following PHP functions parse Debian APT-repository files
@@ -122,6 +122,7 @@
     // you might want to comment the function call out.
     function chb_file_link_from_directory( $dir, $ext, $myfields, $mysrcdields )
     {
+        global $base_url;
         $dhandle = false;
         $version = preg_replace("/^[0-9]+\:/", "", $myfields["Version"]);
 

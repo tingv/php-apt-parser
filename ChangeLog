@@ -1,3 +1,8 @@
+2007-03-01  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.6:
+	* parse-apt-files.inc (chb_file_link_from_directory):
+	  - Added missing "global $base_url;". Thanks to Janek Thomaschewski
+	    for the hint.
+
 2007-03-01  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.5:
 	* parse-apt-files.inc:
 	  - Make $version a local variable. Seems the global thing doesn't
