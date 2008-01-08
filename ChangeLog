@@ -1,17 +1,122 @@
-2006-06-24  Damián Viano  <debian@damianv.com.ar>
-	* README: added info from parse-apt-files.inc
-	* ChangeLog: added entries from parse-apt-files.inc
-	* LICENSE: added MIT license, and Jarno Elonen copyright notice
-	* parse-apt-files.inc: removed all that (now) redundant info
+2008-01-08  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.6:
+	* Merged des branch into trunk. I think, this is stable enough.
 
-2004-10-17  Jarno Elonen  <elonen@debian.org>
-	Version 1.2
+2008-01-08  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.6:
+	* parse-apt-files.inc (chb_file_link_from_directory):
+	  - Added missing "global $base_url;". Thanks to Janek Thomaschewski
+	    for the hint.
+
+2007-12-23  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.5:
+	* parse-apt-files.inc:
+	  - Make $version a local variable. Seems the global thing doesn't
+	    work here and leads to wrongly assumed .build and .changes files.
+	* LICENSE:
+	  - Fixed copyright.
+
+2007-03-01  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.4:
+	* parse-apt-files.inc:
+	  - Added some more classes to allow more customization.
+
+2007-02-28  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.3:
+	* parse-apt-files.inc:
+	  - Moved the .changes and .build detection into two functions:
+	    chb_file_link_from_directory() opens the given directory and reads
+	    all files with the given extension. To check, if the file belongs
+	    to a package, it calls chb_file_match(). This function creates a
+	    string from the given values and tests, if the filename begings
+	    with this string. This change was made, because the code to check
+	    for .changes and .build files was very simlar.
+	    This code change also reverts a change made to link-target
+	    creation, made by Damián Viano (read Alioth bug #304089 for more
+	    information). Because I also did not find out, for what $some_bin
+	    was used, this part was also removed and the code to determine the
+	    search path simplified.
+	  - I further "fixed" the indentation for function parse_section.
+	  - Added some more documentation.
+
+2007-02-28  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.2:
+	* ChangeLog: Added missing entries for last change.
+	* parse-apt-files.inc:
+	  - Fixed bugs in the .build files search/link creation code
+	    introduced in revision 21 (1.3.1).
+	  - Reorganized the steps we do without further code-changes.
+	  - Added some information to the header comment.
+
+2006-11-19  Daniel Leidert  <daniel.leidert@wgdd.de>, 1.3.1:
+	* parse-apt-files.inc:
+	  - Fixed Alioth bug #304143. I tried to read a non-existing field in
+	    Sources and it seems, this confused the script a bit.
+	    (http://alioth.debian.org/tracker/?func=detail&aid=304143&group_id=30953&atid=412507)
+
+2006-06-24  Damián Viano  <debian@damianv.com.ar>, 1.3.0:
+	* README: added info from parse-apt-files.inc, and mention to debarchiver
+	  specific usage
+	* ChangeLog: added entries from parse-apt-files.inc, make it consistent
+	* LICENSE: added MIT license, and Jarno Elonen, Daniel Leidert and Damián
+	  Viano copyright notice
+	* parse-apt-files.inc: 
+	  - bring file up to date, 
+	  - removed all that (now) redundant info
+	* examples/: 
+	  - added example packages.cgi
+	  - added example packages.css
+
+2006-04-27, Damián Viano <debian@damianv.com.ar>, 1.2.9:
+	* parse-apt-files.inc: 
+	  - added span, and class declarations for css, also removed hardcoded
+	    formating
+	  - improved html formating
+
+2006-04-26, Damián Viano <debian@damianv.com.ar.>, 1.2.8:
+	* parse-apt-files.inc: 
+	  - added support for a $base_url global to make links absolutes, useful
+	    when runned as cgi
+	  - smart striping absolute paths from changes and buildlog files based on
+	    $base_url
+	  - fix typo in parsing that messed descriptions with two spaces in the
+	    beggining of a description line
+
+2006-01-04, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.7:
+	* parse-apt-files.inc: 
+	  - when searching for .changes and .build files, the search failed, if
+	  	version number contained x:up_ver-deb_ver (e.g.  3:3.0.5-1). We now
+	  	remove a leading 'x:' from the version number and finally find our
+	  	files.
+
+2005-09-21, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.6:
+	* parse-apt-files.inc: 
+	  - removed id from package description fields (reverts 1.2.5 changes)
+
+2005-06-27, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.5:
+	* parse-apt-files.inc: 
+	  - add id to package description fields <b id= "MD5SUM_PACKAGE_VERSION"></b>
+
+2005-06-23, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.4:
+	* parse-apt-files.inc: 
+	  - output section after version if contrib or non-free
+	  - fix XHTML output (validated against http://schneegans.de/sv/)
+
+2005-06-18, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.3:
+	* parse-apt-files.inc: 
+	  - links to .build files can be included in overview (found similiar to
+	    .changes files)
+
+2005-06-08, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.2:
+	* parse-apt-files.inc: 
+	  - .changes files of binary-only uploads are now detected
+
+2005-04-20, Daniel Leidert <daniel.leidert@wgdd.de>, 1.2.1:
+	* parse-apt-files.inc: 
+	  - added support for multiple Sources.gz files in parse_and_list()
+	  - added support for shared directory containing.changes files
+	  - quick fix for html link regex
+
+2004-10-17  Jarno Elonen  <elonen@debian.org>, 1.2.0:
 	* parse-apt-files.inc: 
 	  - search for .changes file and print a link if possible
 	  - support for non-compressed Packages and Sources files
 
-2004-08-09  Jarno Elonen  <elonen@debian.org>
-	Version 1.1
+2004-08-09  Jarno Elonen  <elonen@debian.org>, 1.1.0:
 	* parse-apt-files.inc: 
 	  - added support for multiple architectures (thanks to  Djoumé Salvetti)
 	  - added support for multiple versions of the same package
