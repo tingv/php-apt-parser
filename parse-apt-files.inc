@@ -7,7 +7,7 @@
     // (Packages.gz, Sources.gz) and generate an XHTML summary of them.
     //
     // Written by Jarno Elonen in 2003, 2004
-    // Written by Daniel Leidert in 2005-2007
+    // Written by Daniel Leidert in 2005-2008
     // Written by Damian Viano in 2006
     //
     // Visit or join us at
