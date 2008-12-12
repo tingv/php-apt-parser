@@ -1,6 +1,6 @@
 <?php
     //////////////////////////////////////////////////////////////////
-    // PHP Apt-file parser, Version 1.3.6
+    // PHP Apt-file parser, Version 1.3.7
     // $Id$
     //
     // The following PHP functions parse Debian APT-repository files
@@ -278,8 +278,11 @@
             print "</span>";
             
             // Output the package description.
-            print "<br/><br/>\n" .
-                  "<blockquote><p class=\"description\">\n" .
+	    print "<br/><br/>\n" .
+                  "<blockquote cite=\"" .
+                  htmlentities($base_url) .
+                  htmlentities($srcfields["Directory"]) .
+                  "\"><p class=\"description\">\n" .
                   link_aware_htmlize(
                     preg_replace("/^[^\n]*\n/", "", $fields["Description"])) .
                   "\n</p>\n" .
